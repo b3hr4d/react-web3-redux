@@ -24,10 +24,6 @@ const settings = createModel<RootModel>()({
       snackbar,
       showSnackBar: true,
     }),
-    SET_LOADING: (state, loading: boolean) => ({
-      ...state,
-      loading,
-    }),
     SET_TRANSLATE: (state, translate: Translate) => ({
       ...state,
       loading: false,
@@ -51,17 +47,26 @@ const settings = createModel<RootModel>()({
         showDetails: !state.showDetails,
       }
     },
-    CHANGE_ADDRESS: (state, user: string) => {
-      return {
-        ...state,
-        user,
-      }
-    },
   },
 
   effects: (dispatch) => ({
-    resetTree: () => {
-      dispatch.settings.SET_LOADING(true)
+    async setModal(modal: boolean) {
+      dispatch.settings.SET_MODAL(modal)
+    },
+    async setSnackBar(snackbar: SnackBarType) {
+      dispatch.settings.SET_SNACKBAR(snackbar)
+    },
+    async setTranslate(translate: Translate) {
+      dispatch.settings.SET_TRANSLATE(translate)
+    },
+    async setShowSnackBar(showSnackBar: boolean) {
+      dispatch.settings.SHOW_SNACKBAR(showSnackBar)
+    },
+    async setShowAddress() {
+      dispatch.settings.SHOW_ADDRESS()
+    },
+    async setShowDetails() {
+      dispatch.settings.SHOW_DETAILS()
     },
   }),
 })

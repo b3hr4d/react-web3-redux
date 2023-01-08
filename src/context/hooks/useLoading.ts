@@ -3,14 +3,13 @@ import { RootState } from "../store"
 
 const useLoading = () => useSelector((state: RootState) => state.loading)
 
-export const useEffectLoading = () => useLoading().effects
+export const useGlobalLoading = () => useLoading().global
 
-export const useSettingLoading = () => useLoading().effects.settings
+export const useModelsLoading = (item: keyof RootState["loading"]["models"]) =>
+  useLoading().models[item]
 
-export const useContractLoading = () => useLoading().effects.contract
-
-export const useWalletLoading = () => useLoading().effects.wallet
-
-export const useWebLoading = () => useLoading().effects.web3
+export const useEffectsLoading = (
+  item: keyof RootState["loading"]["effects"]
+) => useLoading().effects[item]
 
 export default useLoading

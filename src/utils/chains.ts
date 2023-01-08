@@ -82,18 +82,6 @@ export const CHAINS: {
     ].filter((url) => url !== ""),
     name: "Mainnet",
   },
-  3: {
-    urls: [infuraKey ? `https://ropsten.infura.io/v3/${infuraKey}` : ""].filter(
-      (url) => url !== ""
-    ),
-    name: "Ropsten",
-  },
-  4: {
-    urls: [infuraKey ? `https://rinkeby.infura.io/v3/${infuraKey}` : ""].filter(
-      (url) => url !== ""
-    ),
-    name: "Rinkeby",
-  },
   5: {
     urls: [infuraKey ? `https://goerli.infura.io/v3/${infuraKey}` : ""].filter(
       (url) => url !== ""

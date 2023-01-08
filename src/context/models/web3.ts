@@ -8,7 +8,7 @@ import {
   Web3ReactStateWithKey,
 } from "../data/web3/types"
 import { RootModel } from "../store"
-// dont save the connector in the state because it is too big
+// we save connectors here, because it is too big
 // and causes performance issues when serializing
 export const connectorCache: ConnectorCache = {}
 
@@ -91,7 +91,7 @@ const web3 = createModel<RootModel>()({
         if (payload.chainId !== undefined) {
           validateChainId(payload.chainId)
         }
-        // validate accounts statically, independent of existing state
+
         if (payload.accounts !== undefined) {
           for (let i = 0; i < payload.accounts.length; i++) {
             payload.accounts[i] = validateAccount(payload.accounts[i])

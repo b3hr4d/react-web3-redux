@@ -1,6 +1,7 @@
 import { getAddress } from "@ethersproject/address"
 
 export const MAX_SAFE_CHAIN_ID = 4503599627370476
+
 export function validateChainId(chainId: number): void {
   if (
     !Number.isInteger(chainId) ||

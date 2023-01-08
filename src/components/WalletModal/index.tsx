@@ -7,10 +7,11 @@ import {
   Modal,
   Stack,
 } from "@mui/material"
+import { useModelsLoading } from "context/hooks"
 import { initializeConnectors, useWeb3Keys } from "context/hooks/useWeb3"
-import { RootState } from "context/store"
+
 import { useEffect } from "react"
-import { useSelector } from "react-redux"
+
 import WalletCard from "./WalletCard"
 
 interface WalletModalProps {
@@ -21,9 +22,7 @@ interface WalletModalProps {
 const WalletModal: React.FC<WalletModalProps> = ({ open, onClose }) => {
   useEffect(() => initializeConnectors(), [])
 
-  const web3Loading = useSelector(
-    (rootState: RootState) => rootState.loading.models.web3
-  )
+  const web3Loading = useModelsLoading("web3")
 
   const connectorKeys = useWeb3Keys()
 
