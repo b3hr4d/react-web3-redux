@@ -1,16 +1,20 @@
 import MenuIcon from "@mui/icons-material/Menu"
+import { LinearProgress } from "@mui/material"
 import AppBar from "@mui/material/AppBar"
 import Button from "@mui/material/Button"
 import IconButton from "@mui/material/IconButton"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
 import WalletModal from "components/WalletModal"
+import { useGlobalLoading } from "contexts/hooks"
 import { useState } from "react"
 
 interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
   const [open, setOpen] = useState<boolean>(true)
+
+  const web3Loading = useGlobalLoading()
 
   return (
     <AppBar position="static">
@@ -41,6 +45,7 @@ const Header: React.FC<HeaderProps> = () => {
         </Button>
       </Toolbar>
       <WalletModal open={open} onClose={setOpen} />
+      {web3Loading && <LinearProgress />}
     </AppBar>
   )
 }

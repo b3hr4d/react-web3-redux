@@ -47,10 +47,16 @@ export type Web3ReactStateWithConnector = Web3ReactStateWithKey & {
   connector: ConnectorName
 }
 
-export interface ConnectorState extends Web3ReactState {}
+export interface ConnectorState extends Web3ReactState {
+  error: Error | undefined
+}
 
 export type ConnectorCache = {
   [key in ConnectorName]?: ConnectorType
+}
+
+export type Nullifier = {
+  [key in ConnectorName]: number
 }
 
 /**

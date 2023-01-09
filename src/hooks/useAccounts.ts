@@ -1,4 +1,4 @@
-import { usePriorityWeb3 } from "context/hooks/useWeb3"
+import { usePriorityWeb3 } from "contexts/hooks/useWeb3"
 
 export function useAccounts(): string[] | undefined {
   const web3 = usePriorityWeb3()

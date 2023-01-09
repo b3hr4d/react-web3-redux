@@ -35,6 +35,12 @@ const BNB: AddEthereumChainParameter["nativeCurrency"] = {
   decimals: 18,
 }
 
+const AVAX: AddEthereumChainParameter["nativeCurrency"] = {
+  name: "Avalanche",
+  symbol: "AVAX",
+  decimals: 18,
+}
+
 interface BasicChainInformation {
   urls: string[]
   name: string
@@ -53,7 +59,7 @@ function isExtendedChainInformation(
 
 export function getAddChainParameters(
   chainId: number
-): AddEthereumChainParameter | number {
+): AddEthereumChainParameter | undefined {
   const chainInformation = CHAINS[chainId]
   if (isExtendedChainInformation(chainInformation)) {
     return {
@@ -63,14 +69,12 @@ export function getAddChainParameters(
       rpcUrls: chainInformation.urls,
       blockExplorerUrls: chainInformation.blockExplorerUrls,
     }
-  } else {
-    return chainId
   }
 }
 
-const infuraKey = process.env.REACT_APP_INFURA_KEY
-const quickNodeKey = process.env.REACT_APP_QUICKNODE_KEY
-const quickNodeTestKey = process.env.REACT_APP_QUICKNODE_TEST_KEY
+const infuraKey = process.env.NEXT_PUBLIC_INFURA_KEY
+const quickNodeKey = process.env.NEXT_PUBLIC_QUICKNODE_KEY
+const quickNodeTestKey = process.env.NEXT_PUBLIC_QUICKNODE_TEST_KEY
 
 export const CHAINS: {
   [chainId: number]: BasicChainInformation | ExtendedChainInformation
@@ -81,6 +85,8 @@ export const CHAINS: {
       "https://cloudflare-eth.com",
     ].filter((url) => url !== ""),
     name: "Mainnet",
+    nativeCurrency: ETH,
+    blockExplorerUrls: ["https://etherscan.io"],
   },
   5: {
     urls: [infuraKey ? `https://goerli.infura.io/v3/${infuraKey}` : ""].filter(
@@ -95,13 +101,15 @@ export const CHAINS: {
       (url) => url !== ""
     ),
     name: "Kovan",
+    nativeCurrency: ETH,
+    blockExplorerUrls: ["https://kovan.etherscan.io"],
   },
   // BinanceSmartChain
   56: {
     urls: [
       quickNodeKey
-        ? `https://orbital-dawn-bridge.bsc.discover.quiknode.pro/${quickNodeKey}`
-        : "",
+        ? `https://wider-intensive-tree.bsc.discover.quiknode.pro/${quickNodeKey}`
+        : "https://bsc-dataseed.binance.org/",
     ].filter((url) => url !== ""),
     name: "SmartChain",
     nativeCurrency: BNB,
@@ -134,6 +142,12 @@ export const CHAINS: {
     nativeCurrency: ETH,
     blockExplorerUrls: ["https://kovan-optimistic.etherscan.io"],
   },
+  43114: {
+    urls: ["https://api.avax.network/ext/bc/C/rpc"].filter((url) => url !== ""),
+    name: "Avalanche C-Chain",
+    nativeCurrency: AVAX,
+    blockExplorerUrls: ["https://snowtrace.io"],
+  },
   // Arbitrum
   42161: {
     urls: [
@@ -160,6 +174,12 @@ export const CHAINS: {
     name: "Polygon Mainnet",
     nativeCurrency: MATIC,
     blockExplorerUrls: ["https://polygonscan.com"],
+  },
+  31337: {
+    urls: ["http://localhost:8545"],
+    name: "Localhost",
+    nativeCurrency: ETH,
+    blockExplorerUrls: ["https://app.tryethernal.com/"],
   },
   80001: {
     urls: [

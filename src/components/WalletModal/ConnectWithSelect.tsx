@@ -1,109 +1,88 @@
-import { Network } from "@web3-react/network"
-import { ProviderRpcError } from "@web3-react/types"
-import { WalletConnect } from "@web3-react/walletconnect"
-import { getConnector } from "hooks/useConnector"
-import { useCallback, useEffect } from "react"
+import {
+  connectorActivate,
+  connectorAddChain,
+  connectorDisconnect,
+  connectorSwitchChain,
+  useConnectorWithKey,
+} from "contexts/hooks/useWeb3"
+import { NEEDED_CHAIN_ID } from "pages"
+import { useMemo, useState } from "react"
 import { ConnectorName } from "utils/types"
-import useChainSwitch from "../../hooks/useChainSwitch"
-import { CHAINS, getAddChainParameters, URLS } from "../../utils/chains"
 import ChainSelect from "./ChainSelect"
 
+interface ConnectorButtonProps {
+  title: string
+  color: "success" | "error" | "warning" | "info" | "secondary" | "primary"
+  onClick: () => void
+}
 interface ConnectWithSelectProps {
   connectorName: ConnectorName
   isActivating: boolean
   isActive: boolean
-  error: ProviderRpcError | undefined
-  setError: (error: ProviderRpcError | undefined) => void
 }
 
 const ConnectWithSelect: React.FC<ConnectWithSelectProps> = ({
   connectorName,
   isActivating,
   isActive,
-  error,
-  setError,
 }) => {
-  const connector = getConnector(connectorName)
+  const web3 = useConnectorWithKey(connectorName)
 
-  const isNetwork = connector instanceof Network
-  const displayDefault = !isNetwork
-  const chainIds = (isNetwork ? Object.keys(URLS) : Object.keys(CHAINS)).map(
-    (chainId) => Number(chainId)
-  )
-  const { desiredChainId, switchChain } = useChainSwitch(connectorName)
+  const [desiredChainId, setDesiredChainId] = useState(web3?.chainId || 1)
 
-  const connectHandler = useCallback(() => {
-    if (!connector) return
-    Promise.resolve(
-      (async () => {
-        if (connector instanceof WalletConnect || connector instanceof Network)
-          await connector.activate(
-            desiredChainId === -1 ? undefined : desiredChainId
-          )
-        else {
-          await connector.activate(
-            desiredChainId === -1
-              ? undefined
-              : getAddChainParameters(desiredChainId)
-          )
-        }
-      })()
-    )
-      .then(() => setError(undefined))
-      .catch(setError)
-  }, [connector, desiredChainId, setError])
+  const needSwitch =
+    web3?.chainId !== undefined && web3?.chainId !== desiredChainId
 
-  const disconnectHandler = () => {
-    setError(undefined)
-    if (!connector) return
-
-    if (connector.deactivate) {
-      void connector.deactivate()
-    } else {
-      void connector.resetState()
-    }
+  function onChange(event: any) {
+    setDesiredChainId(event.target.value)
+    if (web3?.error?.code || !isActive)
+      connectorSwitchChain(connectorName, event.target.value)
   }
 
-  useEffect(() => {
-    if (!connector) return
-
-    connector.provider?.on("chainChanged", (error: Error) => {
-      console.log(error)
-    })
-
-    return () => {}
-  }, [connector])
-
-  const addChain = useCallback(async () => {
-    if (!connector) return
-    const chain = getAddChainParameters(desiredChainId)
-    console.log(chain)
-    connector.provider?.request({
-      method: "wallet_addEthereumChain",
-      params: [chain],
-    })
-  }, [connector, desiredChainId])
+  const buttonProps: ConnectorButtonProps = useMemo(() => {
+    if (web3?.error?.code === 4902) {
+      return {
+        title: "Add Chain",
+        color: "warning",
+        onClick: () => connectorAddChain(connectorName, desiredChainId),
+      }
+    }
+    if (web3?.error) {
+      return {
+        title: "Try Again?",
+        color: "info",
+        onClick: () => connectorActivate(connectorName, desiredChainId),
+      }
+    }
+    if (needSwitch) {
+      return {
+        title: "Switch Chain",
+        color: "secondary",
+        onClick: () => connectorSwitchChain(connectorName, desiredChainId),
+      }
+    }
+    if (isActive) {
+      return {
+        title: "Disconnect",
+        color: "error",
+        onClick: () => connectorDisconnect(connectorName),
+      }
+    }
+    return {
+      title: "Connect",
+      color: "success",
+      onClick: () => connectorActivate(connectorName, desiredChainId),
+    }
+  }, [connectorName, desiredChainId, isActive, needSwitch, web3?.error])
 
   return (
     <ChainSelect
       connectorName={connectorName}
-      title={
-        error?.code
-          ? "Add Chain"
-          : error
-          ? "Try Again?"
-          : isActive
-          ? "Disconnect"
-          : "Connect"
-      }
-      onClick={
-        error?.code ? addChain : isActive ? disconnectHandler : connectHandler
-      }
       chainId={desiredChainId}
       loading={isActivating}
-      switchChain={switchChain}
-      displayDefault={displayDefault}
-      chainIds={chainIds}
+      onChange={onChange}
+      chainIds={NEEDED_CHAIN_ID}
+      {...buttonProps}
     />
   )
 }

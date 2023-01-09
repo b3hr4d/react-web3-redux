@@ -7,10 +7,7 @@ import {
   Modal,
   Stack,
 } from "@mui/material"
-import { useModelsLoading } from "context/hooks"
-import { initializeConnectors, useWeb3Keys } from "context/hooks/useWeb3"
-
-import { useEffect } from "react"
+import { useConnectorKeys, useInitialized } from "contexts/hooks/useWeb3"
 
 import WalletCard from "./WalletCard"
 
@@ -20,28 +17,20 @@ interface WalletModalProps {
 }
 
 const WalletModal: React.FC<WalletModalProps> = ({ open, onClose }) => {
-  useEffect(() => initializeConnectors(), [])
+  const initialized = useInitialized()
 
-  const web3Loading = useModelsLoading("web3")
-
-  const connectorKeys = useWeb3Keys()
+  const connectorKeys = useConnectorKeys()
 
   return (
     <Modal open={open} onClose={() => onClose(false)} disableEnforceFocus>
-      <Container maxWidth="xs">
-        <Box m="10% auto">
+      <Container maxWidth="xs" disableGutters>
+        <Box m={{ xs: 0, sm: "10% auto" }}>
           <Card>
-            <Box maxHeight="70vh" overflow="auto">
-              {web3Loading ? (
-                <Box
-                  height={300}
-                  overflow="auto"
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                >
+            <Box maxHeight="90vh" overflow="auto">
+              {!initialized ? (
+                <Stack justifyContent="center" alignItems="center" height={300}>
                   <CircularProgress />
-                </Box>
+                </Stack>
               ) : (
                 <Stack
                   spacing={2}

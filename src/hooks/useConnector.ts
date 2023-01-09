@@ -1,10 +1,10 @@
-import { Web3ContextType } from "context/data/web3/types"
+import { Web3ContextType } from "contexts/data/web3/types"
 import useWeb3, {
   getIsActive,
   getWeb3,
-  useWeb3WithKey,
-} from "context/hooks/useWeb3"
-import { connectorCache } from "context/models/web3"
+  useConnectorWithKey,
+} from "contexts/hooks/useWeb3"
+import { connectorCache } from "contexts/models/web3"
 import { ConnectorName, ConnectorType } from "utils/types"
 import { useProvider } from "./useProvider"
 
@@ -18,7 +18,7 @@ export const useConnectorByName = (
   const connector = getConnector(key)
   const isActive = getIsActive(key)
 
-  const states = useWeb3WithKey(key)
+  const states = useConnectorWithKey(key)
   const provider = useProvider(key, !!states?.accounts?.length)
 
   const signer = provider?.getSigner()
@@ -30,6 +30,7 @@ export const getWeb3Keys = () => {
   const web3 = getWeb3()
   return Object.keys(web3) as ConnectorName[]
 }
+
 export const useWeb3Keys = () => {
   const web3 = useWeb3()
   return Object.keys(web3) as ConnectorName[]

@@ -10,7 +10,6 @@ import {
   MenuItem,
 } from "@mui/material"
 import Menu from "@mui/material/Menu"
-import { ProviderRpcError } from "@web3-react/types"
 import { useState } from "react"
 import { ConnectorName } from "utils/types"
 import {
@@ -18,7 +17,7 @@ import {
   useChainIdWithKey,
   useIsActivatingWithKey,
   useIsActive,
-} from "../../context/hooks/useWeb3"
+} from "../../contexts/hooks/useWeb3"
 import Accounts from "./Accounts"
 import ConnectWithSelect from "./ConnectWithSelect"
 import Status from "./Status"
@@ -34,7 +33,6 @@ const WalletCard: React.FC<WalletCardProps> = ({ name }) => {
 
   const isActive = useIsActive(name)
 
-  const [error, setError] = useState<ProviderRpcError>()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const openMenu = Boolean(anchorEl)
@@ -73,7 +71,6 @@ const WalletCard: React.FC<WalletCardProps> = ({ name }) => {
             isActivating={isActivating}
             isActive={isActive}
             chainId={chainId}
-            error={error}
           />
         }
       />
@@ -99,8 +96,6 @@ const WalletCard: React.FC<WalletCardProps> = ({ name }) => {
           connectorName={name}
           isActivating={isActivating}
           isActive={isActive}
-          error={error}
-          setError={setError}
         />
       </Box>
     </Box>
