@@ -1,15 +1,20 @@
 import { useSelector } from "react-redux"
 import { RootState } from "../store"
 
-const useLoading = () => useSelector((state: RootState) => state.loading)
+export function useGlobalLoading() {
+  return useLoading().global
+}
 
-export const useGlobalLoading = () => useLoading().global
+export function useModelsLoading(item: keyof RootState["loading"]["models"]) {
+  return useLoading().models[item]
+}
 
-export const useModelsLoading = (item: keyof RootState["loading"]["models"]) =>
-  useLoading().models[item]
+export function useEffectsLoading(item: keyof RootState["loading"]["effects"]) {
+  return useLoading().effects[item]
+}
 
-export const useEffectsLoading = (
-  item: keyof RootState["loading"]["effects"]
-) => useLoading().effects[item]
+function useLoading() {
+  return useSelector((state: RootState) => state.loading)
+}
 
 export default useLoading

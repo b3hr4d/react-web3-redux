@@ -1,18 +1,20 @@
-import { Web3Provider } from "@ethersproject/providers"
 import { useSelector } from "react-redux"
-import store, { RootState } from "../store"
+import { RootState } from "../store"
 
-export const setContract = (provider: Web3Provider, withSigner = false) =>
-  store.dispatch.contract.init({ provider, withSigner })
+export function useTransaction() {
+  return useContract().contract?.transaction
+}
 
-export const unsetContract = () => store.dispatch.contract.UNSET()
+export function useProvider() {
+  return useContract().contract?.provider
+}
 
-export const useTransaction = () => useContract().contract?.transaction
+export function useSigner() {
+  return useContract().contract?.signer
+}
 
-export const useProvider = () => useContract().contract?.provider
-
-export const useSigner = () => useContract().contract?.signer
-
-const useContract = () => useSelector((state: RootState) => state.contract)
+function useContract() {
+  return useSelector((state: RootState) => state.contract)
+}
 
 export default useContract

@@ -1,6 +1,6 @@
 import { createModel } from "@rematch/core"
-import { SnackBarType, Translate } from "../data/settings"
 import { RootModel } from "../store"
+import { SnackBarType, Translate } from "../types/settings"
 
 const defaultState: any = {
   showSnackBar: false,
@@ -12,7 +12,7 @@ const defaultState: any = {
   },
 }
 
-const settings = createModel<RootModel>()({
+const setting = createModel<RootModel>()({
   state: defaultState,
   reducers: {
     SET_MODAL: (state, modal: boolean) => ({
@@ -71,4 +71,4 @@ const settings = createModel<RootModel>()({
   }),
 })
 
-export default settings
+export default setting

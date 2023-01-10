@@ -1,5 +1,5 @@
+import { DeleteForever } from "@mui/icons-material"
 import MoreVertIcon from "@mui/icons-material/MoreVert"
-import SendIcon from "@mui/icons-material/Send"
 import {
   Avatar,
   Box,
@@ -10,6 +10,7 @@ import {
   MenuItem,
 } from "@mui/material"
 import Menu from "@mui/material/Menu"
+import { connectorRemove } from "contexts/actions/web3"
 import { useState } from "react"
 import { ConnectorName } from "utils/types"
 import {
@@ -40,7 +41,13 @@ const WalletCard: React.FC<WalletCardProps> = ({ name }) => {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleDelete = () => {
+    connectorRemove(name)
     setAnchorEl(null)
   }
 
@@ -83,11 +90,11 @@ const WalletCard: React.FC<WalletCardProps> = ({ name }) => {
         open={openMenu}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleDelete}>
           <ListItemIcon>
-            <SendIcon fontSize="small" />
+            <DeleteForever fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary="Sent mail" />
+          <ListItemText primary="Delete Connector" />
         </MenuItem>
       </Menu>
       <Box p={2} pt={0}>

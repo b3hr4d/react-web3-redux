@@ -3,7 +3,7 @@ import {
   connectorAddChain,
   connectorDisconnect,
   connectorSwitchChain,
-  useConnectorWithKey,
+  useConnectorStates,
 } from "contexts/hooks/useWeb3"
 import { NEEDED_CHAIN_ID } from "pages"
 import { useMemo, useState } from "react"
@@ -26,35 +26,44 @@ const ConnectWithSelect: React.FC<ConnectWithSelectProps> = ({
   isActivating,
   isActive,
 }) => {
-  const web3 = useConnectorWithKey(connectorName)
+  const connectorState = useConnectorStates(connectorName)
 
-  const [desiredChainId, setDesiredChainId] = useState(web3?.chainId || 1)
-
-  const needSwitch =
-    web3?.chainId !== undefined && web3?.chainId !== desiredChainId
+  const [desiredChainId, setDesiredChainId] = useState(
+    connectorState?.chainId || 1
+  )
 
   function onChange(event: any) {
     setDesiredChainId(event.target.value)
-    if (web3?.error?.code || !isActive)
+    if (connectorState?.error?.code || !isActive)
       connectorSwitchChain(connectorName, event.target.value)
   }
 
   const buttonProps: ConnectorButtonProps = useMemo(() => {
-    if (web3?.error?.code === 4902) {
+    if (!connectorState)
+      return {
+        title: "Not Available",
+        color: "warning",
+        onClick: () => {},
+      }
+
+    if (connectorState.error?.code === 4902) {
       return {
         title: "Add Chain",
         color: "warning",
         onClick: () => connectorAddChain(connectorName, desiredChainId),
       }
     }
-    if (web3?.error) {
+    if (connectorState.error) {
       return {
         title: "Try Again?",
         color: "info",
         onClick: () => connectorActivate(connectorName, desiredChainId),
       }
     }
-    if (needSwitch) {
+    if (
+      connectorState.chainId !== undefined &&
+      connectorState.chainId !== desiredChainId
+    ) {
       return {
         title: "Switch Chain",
         color: "secondary",
@@ -73,7 +82,7 @@ const ConnectWithSelect: React.FC<ConnectWithSelectProps> = ({
       color: "success",
       onClick: () => connectorActivate(connectorName, desiredChainId),
     }
-  }, [connectorName, desiredChainId, isActive, needSwitch, web3?.error])
+  }, [connectorName, desiredChainId, isActive, connectorState])
 
   return (
     <ChainSelect

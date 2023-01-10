@@ -1,7 +1,7 @@
 import { init, Models, RematchDispatch, RematchRootState } from "@rematch/core"
 import loadingPlugin, { ExtraModelsFromLoading } from "@rematch/loading"
 import contract from "./models/contract"
-import settings from "./models/settings"
+import setting from "./models/setting"
 import wallet from "./models/wallet"
 import web3 from "./models/web3"
 
@@ -16,13 +16,13 @@ export interface RootModel extends Models<RootModel> {
   web3: typeof web3
   wallet: typeof wallet
   contract: typeof contract
-  settings: typeof settings
+  setting: typeof setting
 }
 
 export const models: RootModel = {
   web3,
   wallet,
-  settings,
+  setting,
   contract,
 }
 

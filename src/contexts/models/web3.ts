@@ -2,16 +2,20 @@ import { createModel } from "@rematch/core"
 import { Network } from "@web3-react/network"
 import { Actions, Web3ReactStateUpdate } from "@web3-react/types"
 import { WalletConnect } from "@web3-react/walletconnect"
-import { validateAccount, validateChainId } from "contexts/data/web3"
 import { getAddChainParameters } from "utils/chains"
 import { ConnectorName } from "utils/types"
+import { validateAccount, validateChainId } from "utils/validators"
+import { RootModel } from "../store"
 import {
   ConnectorCache,
   ConnectorState,
+  ConnectorWithChainId,
+  DefaultState,
+  ErrorPayload,
   Nullifier,
+  SwitchChainParams,
   Web3ReactStateWithKey,
-} from "../data/web3/types"
-import { RootModel } from "../store"
+} from "../types/web3"
 // we save connectors here, because it is too big
 // and causes performance issues when serializing
 export const connectorCache: ConnectorCache = {}
@@ -21,29 +25,6 @@ const connectorStatus: ConnectorState = {
   accounts: [],
   activating: false,
   error: undefined,
-}
-
-type DefaultState = {
-  initialized: boolean
-  connectors: {
-    [key in ConnectorName]?: ConnectorState
-  }
-}
-
-type ConnectorWithChainId = {
-  key: ConnectorName
-  desiredChainId: number
-}
-
-type SwitchChainParams = {
-  key: ConnectorName
-  chainId?: number
-  desiredChainId?: number
-}
-
-type ErrorPayload = {
-  key: ConnectorName
-  error: Error | undefined
 }
 
 const nullifier: Nullifier = {
@@ -79,6 +60,14 @@ const web3 = createModel<RootModel>()({
           ...state.connectors,
           [key]: connectorStatus,
         },
+      }
+    },
+    REMOVE: (state, key: ConnectorName) => {
+      const connectors = state.connectors
+      delete connectors[key]
+      return {
+        ...state,
+        connectors,
       }
     },
     UPDATE: (state, payload: Web3ReactStateWithKey) => {

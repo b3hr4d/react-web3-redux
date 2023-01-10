@@ -1,5 +1,5 @@
 import { Box, Button, Card, Container, Stack, Typography } from "@mui/material"
-import { initializeConnectors } from "contexts/hooks/useWeb3"
+import { initializeConnectors } from "contexts/actions/web3"
 import useConnector from "hooks/useConnector"
 import { useEffect } from "react"
 import { NeededConnector } from "utils/types"
@@ -33,6 +33,7 @@ export default function Home() {
     })
     console.log(tx)
   }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Container maxWidth="md" sx={{ mt: 2 }}>

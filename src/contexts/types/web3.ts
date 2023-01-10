@@ -73,3 +73,26 @@ export type Web3ContextType<T extends BaseProvider = Web3Provider> = {
   provider: T | undefined
   signer: JsonRpcSigner | undefined
 }
+
+export type DefaultState = {
+  initialized: boolean
+  connectors: {
+    [key in ConnectorName]?: ConnectorState
+  }
+}
+
+export type ConnectorWithChainId = {
+  key: ConnectorName
+  desiredChainId: number
+}
+
+export type SwitchChainParams = {
+  key: ConnectorName
+  chainId?: number
+  desiredChainId?: number
+}
+
+export type ErrorPayload = {
+  key: ConnectorName
+  error: Error | undefined
+}
